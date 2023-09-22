@@ -2,6 +2,9 @@ package edu.escuelait.bautismospring.controllers;
 
 
 import edu.escuelait.bautismospring.domain.Team;
+import edu.escuelait.bautismospring.services.IPlayersServices;
+import edu.escuelait.bautismospring.services.PlayersServices;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -14,6 +17,16 @@ import java.util.Random;
 @RestController
 @RequestMapping("/teams")
 public class EquipoRestController {
+
+    //@Autowired
+    //private IPlayersServices playersServices;
+
+    private IPlayersServices playersServices;
+
+    public EquipoRestController(IPlayersServices playersServices) {
+        this.playersServices = playersServices;
+    }
+
 
     // Listado de equipos, para simplificar y no usar una base de datos
     ArrayList<Team> teams = new ArrayList<>(
@@ -108,6 +121,15 @@ public class EquipoRestController {
         int golesB = random.nextInt(4);
 
         return "Team " + teamA + " (" + golesA + ")" + " - Team " + teamB + " (" + golesB + ")";
+    }
+
+
+    @GetMapping("/{teamsName}/players")
+    public ResponseEntity<?> listPlayersByTeam(@PathVariable String teamsName) {
+
+        List players = playersServices.getPlayersByTeam(teamsName);
+
+        return ResponseEntity.ok(players);
     }
 
 
